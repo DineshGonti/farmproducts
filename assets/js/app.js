@@ -249,6 +249,13 @@
       if (countEl) countEl.textContent = list.length + " product" + (list.length === 1 ? "" : "s");
     }
 
+    // phones keep the filter panel folded behind a button so products come first
+    var filterToggle = document.querySelector("[data-filters-toggle]");
+    if (filterToggle && filterBox) filterToggle.addEventListener("click", function () {
+      var open = filterBox.classList.toggle("is-open");
+      filterToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+
     if (filterBox) filterBox.addEventListener("change", apply);
     if (sortSel) sortSel.addEventListener("change", apply);
     if (searchInput) searchInput.addEventListener("input", apply);
@@ -291,11 +298,13 @@
       table.innerHTML =
         "<thead><tr><th>Variety</th><th>Origin</th><th>Character</th><th>Pack</th><th>Rate</th><th>Status</th></tr></thead><tbody>" +
         window.FP_PRODUCTS.filter(function (p) { return p.cat === "turmeric"; }).map(function (p) {
+          // data-label lets the phone layout show each cell as "Label: value"
           return "<tr><td><b>" + p.name + "</b>" +
             (p.telugu ? ' <span class="card__telugu">' + p.telugu + "</span>" : "") + "</td>" +
-            "<td>" + p.origin + "</td><td>" + p.spec + "</td><td>" + p.unit + "</td>" +
-            "<td>" + money(p.price) + "</td>" +
-            '<td><span class="pill pill--' + (p.stock ? "in" : "out") + '">' +
+            '<td data-label="Origin">' + p.origin + '</td><td data-label="Character">' + p.spec +
+            '</td><td data-label="Pack">' + p.unit + "</td>" +
+            '<td data-label="Rate">' + money(p.price) + "</td>" +
+            '<td data-label="Status"><span class="pill pill--' + (p.stock ? "in" : "out") + '">' +
               (p.stock ? "In stock" : "Out of stock") + "</span></td></tr>";
         }).join("") + "</tbody>";
     }
